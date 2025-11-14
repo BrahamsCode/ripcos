@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="bg-gray-100">
     <div class="flex h-screen">
         <!-- Sidebar -->
@@ -19,7 +21,8 @@
             <!-- Selector de Rol -->
             <div class="mb-6 p-3 bg-blue-700 rounded-lg">
                 <label class="text-xs text-blue-200 mb-2 block">ROL ACTUAL</label>
-                <select id="roleSelector" class="w-full bg-blue-600 text-white px-3 py-2 rounded border-none outline-none cursor-pointer">
+                <select id="roleSelector"
+                    class="w-full bg-blue-600 text-white px-3 py-2 rounded border-none outline-none cursor-pointer">
                     <option value="gerente">👔 Gerente</option>
                     <option value="produccion">🏭 Producción</option>
                     <option value="asistente">📋 Asistente Admin.</option>
@@ -32,7 +35,8 @@
 
             <div class="mt-auto pt-4 border-t border-blue-700">
                 <div class="flex items-center gap-3 p-3 bg-blue-700 rounded-lg">
-                    <div id="userIcon" class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-lg">👔</div>
+                    <div id="userIcon"
+                        class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-lg">👔</div>
                     <div class="flex-1">
                         <p id="userName" class="font-semibold text-sm">Douglas McGee</p>
                         <p id="userRole" class="text-blue-300 text-xs capitalize">gerente</p>
@@ -54,31 +58,35 @@
                     <!-- DASHBOARD -->
                     <div id="dashboard" class="space-y-6">
                         <div class="grid grid-cols-4 gap-4">
-                            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
+                            <div
+                                class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-3xl">🏭</span>
                                     <span id="statProduction" class="text-3xl font-bold">0</span>
                                 </div>
                                 <p class="text-blue-100">En Producción</p>
                             </div>
-                            
-                            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
+
+                            <div
+                                class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-3xl">📦</span>
                                     <span id="statWarehouse" class="text-3xl font-bold">0</span>
                                 </div>
                                 <p class="text-green-100">Stock en Almacén</p>
                             </div>
-                            
-                            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+
+                            <div
+                                class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-3xl">🏪</span>
                                     <span id="statStores" class="text-3xl font-bold">0</span>
                                 </div>
                                 <p class="text-purple-100">Tiendas Activas</p>
                             </div>
-                            
-                            <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
+
+                            <div
+                                class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-3xl">📈</span>
                                     <span id="statSales" class="text-3xl font-bold">0</span>
@@ -98,10 +106,12 @@
                     <!-- PRODUCCIÓN -->
                     <div id="produccion" class="space-y-6 hidden">
                         <div class="flex gap-4">
-                            <button onclick="appState.openAddProductModal()" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all font-bold shadow-md">
+                            <button onclick="appState.openAddProductModal()"
+                                class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all font-bold shadow-md">
                                 + Nuevo Producto
                             </button>
-                            <button onclick="appState.openBulkUploadModal()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-bold shadow-md">
+                            <button onclick="appState.openBulkUploadModal()"
+                                class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-bold shadow-md">
                                 📤 Importar Productos
                             </button>
                         </div>
@@ -120,13 +130,32 @@
 
                     <!-- ALMACÉN -->
                     <div id="almacen" class="space-y-6 hidden">
-                        <div class="flex gap-4 mb-6">
-                            <button onclick="alert('Funcionalidad en desarrollo')" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all font-bold shadow-md">
-                                + Agregar Categoría
-                            </button>
-                            <button onclick="alert('Funcionalidad en desarrollo')" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-bold shadow-md">
-                                + Ingreso Manual
-                            </button>
+                        <div class="flex items-center justify-between gap-4 mb-4">
+                            <div class="flex items-center gap-3 w-full max-w-2xl">
+                                <input id="almacenSearch" type="search" placeholder="Buscar producto o categoría..."
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <label class="flex items-center gap-2 text-sm text-gray-600">
+                                    <input id="almacenLowStock" type="checkbox">
+                                    Mostrar solo bajo stock (&lt; 50)
+                                </label>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button onclick="appState.openAddAlmacenModal()"
+                                    class="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg hover:from-green-600 hover:to-green-700 transition-all font-bold shadow-md">
+                                    + Nuevo Ítem
+                                </button>
+                                <button id="importAlmacenBtn"
+                                    onclick="document.getElementById('importAlmacenInput').click()"
+                                    class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-bold shadow-md">
+                                    📤 Importar
+                                </button>
+                                <input id="importAlmacenInput" type="file" accept="application/json" class="hidden">
+                                <button onclick="appState.exportAlmacenCSV()"
+                                    class="bg-gradient-to-r from-gray-700 to-gray-800 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-all font-bold shadow-md">
+                                    ⤓ Exportar CSV
+                                </button>
+                            </div>
                         </div>
 
                         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -152,7 +181,8 @@
 
                     <!-- TIENDAS -->
                     <div id="tiendas" class="space-y-6 hidden">
-                        <button onclick="alert('Funcionalidad en desarrollo')" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all font-bold shadow-md">
+                        <button onclick="alert('Funcionalidad en desarrollo')"
+                            class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all font-bold shadow-md">
                             + Nueva Tienda
                         </button>
 
@@ -188,13 +218,16 @@
                                 <div class="p-4 border rounded-lg">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl">👔</div>
+                                            <div
+                                                class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl">
+                                                👔</div>
                                             <div>
                                                 <div class="font-bold">Douglas McGee</div>
                                                 <div class="text-sm text-gray-500">Gerente General</div>
                                             </div>
                                         </div>
-                                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
+                                        <span
+                                            class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
                                             Acceso Total
                                         </span>
                                     </div>
@@ -203,13 +236,16 @@
                                 <div class="p-4 border rounded-lg">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white text-xl">🏭</div>
+                                            <div
+                                                class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white text-xl">
+                                                🏭</div>
                                             <div>
                                                 <div class="font-bold">Juan Pérez</div>
                                                 <div class="text-sm text-gray-500">Jefe de Producción</div>
                                             </div>
                                         </div>
-                                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold">
+                                        <span
+                                            class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold">
                                             Producción + Almacén
                                         </span>
                                     </div>
@@ -218,13 +254,16 @@
                                 <div class="p-4 border rounded-lg">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl">📋</div>
+                                            <div
+                                                class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl">
+                                                📋</div>
                                             <div>
                                                 <div class="font-bold">María López</div>
                                                 <div class="text-sm text-gray-500">Asistente Administrativo</div>
                                             </div>
                                         </div>
-                                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
+                                        <span
+                                            class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
                                             Almacén + Tiendas
                                         </span>
                                     </div>
@@ -242,29 +281,37 @@
         <div class="modal-content">
             <span class="modal-close" onclick="appState.closeProductModal()">&times;</span>
             <h2 class="text-2xl font-bold text-gray-800 mb-4" id="productModalTitle">Nuevo Producto</h2>
-            
+
             <form id="productForm" onsubmit="appState.saveProduct(event)">
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre del Producto *</label>
-                        <input type="text" id="productName" placeholder="Ej: Polo Básico Blanco" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <input type="text" id="productName" placeholder="Ej: Polo Básico Blanco"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Categoría *</label>
-                            <input type="text" id="productCategoria" placeholder="Ej: Polos" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <input type="text" id="productCategoria" placeholder="Ej: Polos"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Cantidad *</label>
-                            <input type="number" id="productCantidad" placeholder="50" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" min="1" required>
+                            <input type="number" id="productCantidad" placeholder="50"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                min="1" required>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Etapa Actual *</label>
-                            <select id="productEtapa" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <select id="productEtapa"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required>
                                 <option value="">Selecciona una etapa</option>
                                 <option value="tela">🧵 TELA</option>
                                 <option value="corte">✂️ CORTE</option>
@@ -275,15 +322,19 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha de Inicio *</label>
-                            <input type="date" id="productFecha" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <input type="date" id="productFecha"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required>
                         </div>
                     </div>
 
                     <div class="flex gap-3 pt-4">
-                        <button type="submit" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-semibold">
+                        <button type="submit"
+                            class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all font-semibold">
                             Guardar Producto
                         </button>
-                        <button type="button" onclick="appState.closeProductModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-all font-semibold">
+                        <button type="button" onclick="appState.closeProductModal()"
+                            class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-all font-semibold">
                             Cancelar
                         </button>
                     </div>
@@ -296,18 +347,86 @@
     <div id="deleteModal" class="modal">
         <div class="modal-content">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Confirmar Eliminación</h2>
-            <p class="text-gray-600 mb-6">¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.</p>
+            <p class="text-gray-600 mb-6">¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede
+                deshacer.</p>
             <div class="flex gap-3">
-                <button onclick="appState.confirmDelete()" class="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-all font-semibold">
+                <button
+                    onclick="(appState && appState.almacenToDelete) ? appState.confirmDeleteAlmacen() : appState.confirmDelete()"
+                    class="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-all font-semibold">
                     Eliminar
                 </button>
-                <button onclick="appState.closeDeleteModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-all font-semibold">
+                <button
+                    onclick="(appState && appState.almacenToDelete) ? (appState.almacenToDelete = null, appState.closeDeleteModal && appState.closeDeleteModal()) : appState.closeDeleteModal()"
+                    class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-all font-semibold">
                     Cancelar
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL: Agregar/Editar Ítem Almacén -->
+    <div id="warehouseModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="appState.closeAlmacenModal()">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4" id="warehouseModalTitle">Nuevo Ítem de Almacén</h2>
+            <form id="warehouseForm" onsubmit="appState.saveAlmacenItem(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Producto *</label>
+                        <input type="text" id="almProducto" placeholder="Ej: Polo Básico Blanco"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Categoría *</label>
+                            <input type="text" id="almCategoria" placeholder="Ej: Polos"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Stock *</label>
+                            <input type="number" id="almStock" placeholder="0"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Ingresos</label>
+                            <input type="number" id="almIngresos" placeholder="0"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg" min="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Ventas</label>
+                            <input type="number" id="almVentas" placeholder="0"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg" min="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Precio Venta</label>
+                            <input type="number" step="0.01" id="almPrecioVenta" placeholder="0.00"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Precio Compra</label>
+                            <input type="number" step="0.01" id="almPrecioCompra" placeholder="0.00"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                        <div class="flex items-end">
+                            <div class="w-full">
+                                <button type="submit"
+                                    class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg font-semibold">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
+
 </html>
