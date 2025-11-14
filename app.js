@@ -82,8 +82,118 @@ const appState = {
         }
     },
 
-    addNewProduction() {
-        alert('Funcionalidad de agregar nueva producción en desarrollo');
+    // CRUD Operations
+    editingProductId: null,
+
+    openAddProductModal() {
+        this.editingProductId = null;
+        document.getElementById('productModalTitle').textContent = 'Nuevo Producto';
+        document.getElementById('productForm').reset();
+        
+        // Establecer fecha de hoy
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('productFecha').value = today;
+        
+        document.getElementById('productModal').classList.add('active');
+    },
+
+    openEditProductModal(productId) {
+        const product = this.data.products.find(p => p.id === productId);
+        if (!product) return;
+
+        this.editingProductId = productId;
+        document.getElementById('productModalTitle').textContent = 'Editar Producto';
+        document.getElementById('productName').value = product.name;
+        document.getElementById('productCategoria').value = product.categoria;
+        document.getElementById('productCantidad').value = product.cantidad;
+        document.getElementById('productEtapa').value = product.etapa;
+        document.getElementById('productFecha').value = product.fechaInicio;
+        
+        document.getElementById('productModal').classList.add('active');
+    },
+
+    closeProductModal() {
+        this.editingProductId = null;
+        document.getElementById('productModal').classList.remove('active');
+        document.getElementById('productForm').reset();
+    },
+
+    saveProduct(event) {
+        event.preventDefault();
+
+        const name = document.getElementById('productName').value.trim();
+        const categoria = document.getElementById('productCategoria').value.trim();
+        const cantidad = parseInt(document.getElementById('productCantidad').value);
+        const etapa = document.getElementById('productEtapa').value;
+        const fechaInicio = document.getElementById('productFecha').value;
+
+        if (!name || !categoria || !cantidad || !etapa || !fechaInicio) {
+            showNotification('Por favor completa todos los campos', 'error');
+            return;
+        }
+
+        if (this.editingProductId) {
+            // Actualizar producto existente
+            const product = this.data.products.find(p => p.id === this.editingProductId);
+            product.name = name;
+            product.categoria = categoria;
+            product.cantidad = cantidad;
+            product.etapa = etapa;
+            product.fechaInicio = fechaInicio;
+            
+            showNotification(`✏️ ${name} actualizado correctamente`, 'success');
+        } else {
+            // Crear nuevo producto
+            const newId = Math.max(...this.data.products.map(p => p.id), 0) + 1;
+            this.data.products.push({
+                id: newId,
+                name,
+                cantidad,
+                etapa,
+                categoria,
+                fechaInicio
+            });
+            
+            showNotification(`✅ ${name} agregado correctamente`, 'success');
+        }
+
+        this.closeProductModal();
+        this.renderProduccion();
+        this.renderDashboard();
+        this.renderMenu();
+    },
+
+    deleteProductSetup(productId) {
+        const product = this.data.products.find(p => p.id === productId);
+        if (!product) return;
+
+        this.productToDelete = productId;
+        document.getElementById('deleteModal').classList.add('active');
+    },
+
+    closeDeleteModal() {
+        this.productToDelete = null;
+        document.getElementById('deleteModal').classList.remove('active');
+    },
+
+    confirmDelete() {
+        if (!this.productToDelete) return;
+
+        const product = this.data.products.find(p => p.id === this.productToDelete);
+        const productName = product.name;
+
+        this.data.products = this.data.products.filter(p => p.id !== this.productToDelete);
+        
+        this.closeDeleteModal();
+        showNotification(`🗑️ ${productName} eliminado correctamente`, 'success');
+        
+        this.renderProduccion();
+        this.renderDashboard();
+        this.renderMenu();
+    },
+
+    openBulkUploadModal() {
+        showNotification('Funcionalidad de importación en desarrollo', 'info');
     },
 
     changeRole(newRole) {
@@ -227,7 +337,7 @@ const appState = {
                             const days = Math.floor((new Date() - new Date(product.fechaInicio)) / (1000 * 60 * 60 * 24));
                             return `
                                 <div class="border rounded-lg p-4 hover:shadow-md transition-shadow product-card">
-                                    <div class="flex items-center justify-between">
+                                    <div class="flex items-center justify-between gap-4">
                                         <div class="flex-1">
                                             <div class="flex items-center gap-3">
                                                 <h4 class="font-bold text-gray-800">${product.name}</h4>
@@ -239,9 +349,24 @@ const appState = {
                                                 <span>🕐 ${days} días</span>
                                             </div>
                                         </div>
-                                        <button onclick="appState.moverEtapa(${product.id})" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all shadow-md font-semibold">
-                                            Siguiente →
-                                        </button>
+                                        <div class="flex flex-col gap-2">
+                                            ${etapa.id !== 'almacen' ? `
+                                                <button onclick="appState.moverEtapa(${product.id})" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all shadow-md font-semibold text-sm whitespace-nowrap">
+                                                    Siguiente →
+                                                </button>
+                                            ` : `
+                                                <div class="flex items-center gap-2 text-green-600 px-3 py-2">
+                                                    <span>✅</span>
+                                                    <span class="font-semibold text-sm">Completado</span>
+                                                </div>
+                                            `}
+                                            <button onclick="appState.openEditProductModal(${product.id})" class="bg-orange-500 text-white px-3 py-2 rounded-lg hover:bg-orange-600 transition-all shadow-md font-semibold text-sm whitespace-nowrap">
+                                                ✏️ Editar
+                                            </button>
+                                            <button onclick="appState.deleteProductSetup(${product.id})" class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-all shadow-md font-semibold text-sm whitespace-nowrap">
+                                                🗑️ Eliminar
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             `;
