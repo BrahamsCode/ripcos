@@ -2,7 +2,7 @@
 const appState = {
     currentRole: 'gerente',
     activeSection: 'dashboard',
-    
+
     data: {
         products: [
             { id: 1, name: 'Polo Básico Blanco', cantidad: 50, etapa: 'tela', categoria: 'Polos', fechaInicio: '2024-11-10' },
@@ -55,7 +55,7 @@ const appState = {
         const currentIndex = this.data.etapas.findIndex(e => e.id === product.etapa);
         if (currentIndex < this.data.etapas.length - 1) {
             const newEtapa = this.data.etapas[currentIndex + 1].id;
-            
+
             // Si llega a almacén, agregar al inventario
             if (newEtapa === 'almacen') {
                 const newId = Math.max(...this.data.almacen.map(a => a.id), 0) + 1;
@@ -69,13 +69,13 @@ const appState = {
                     precioCompra: 0,
                     precioVenta: 0
                 });
-                
+
                 // Mostrar notificación
                 showNotification(`✅ ${product.name} movido a Almacén`, 'success');
             } else {
                 showNotification(`✅ ${product.name} movido a ${this.data.etapas.find(e => e.id === newEtapa).name}`, 'success');
             }
-            
+
             product.etapa = newEtapa;
             this.renderProduccion();
             this.renderDashboard();
@@ -84,16 +84,20 @@ const appState = {
 
     // CRUD Operations
     editingProductId: null,
+    // Almacén: estado y utilidades
+    editingAlmacenId: null,
+    almacenFilter: '',
+    almacenLowStockOnly: false,
 
     openAddProductModal() {
         this.editingProductId = null;
         document.getElementById('productModalTitle').textContent = 'Nuevo Producto';
         document.getElementById('productForm').reset();
-        
+
         // Establecer fecha de hoy
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('productFecha').value = today;
-        
+
         document.getElementById('productModal').classList.add('active');
     },
 
@@ -108,7 +112,7 @@ const appState = {
         document.getElementById('productCantidad').value = product.cantidad;
         document.getElementById('productEtapa').value = product.etapa;
         document.getElementById('productFecha').value = product.fechaInicio;
-        
+
         document.getElementById('productModal').classList.add('active');
     },
 
@@ -140,7 +144,7 @@ const appState = {
             product.cantidad = cantidad;
             product.etapa = etapa;
             product.fechaInicio = fechaInicio;
-            
+
             showNotification(`✏️ ${name} actualizado correctamente`, 'success');
         } else {
             // Crear nuevo producto
@@ -153,7 +157,7 @@ const appState = {
                 categoria,
                 fechaInicio
             });
-            
+
             showNotification(`✅ ${name} agregado correctamente`, 'success');
         }
 
@@ -183,10 +187,10 @@ const appState = {
         const productName = product.name;
 
         this.data.products = this.data.products.filter(p => p.id !== this.productToDelete);
-        
+
         this.closeDeleteModal();
         showNotification(`🗑️ ${productName} eliminado correctamente`, 'success');
-        
+
         this.renderProduccion();
         this.renderDashboard();
         this.renderMenu();
@@ -196,29 +200,195 @@ const appState = {
         showNotification('Funcionalidad de importación en desarrollo', 'info');
     },
 
+    /* --------------------- GESTIÓN DE ALMACÉN --------------------- */
+    openAddAlmacenModal() {
+        this.editingAlmacenId = null;
+        document.getElementById('warehouseModalTitle').textContent = 'Nuevo Ítem de Almacén';
+        const form = document.getElementById('warehouseForm');
+        if (form) form.reset();
+        document.getElementById('warehouseModal').classList.add('active');
+    },
+
+    openEditAlmacenModal(itemId) {
+        const item = this.data.almacen.find(a => a.id === itemId);
+        if (!item) return;
+        this.editingAlmacenId = itemId;
+        document.getElementById('warehouseModalTitle').textContent = 'Editar Ítem de Almacén';
+        document.getElementById('almProducto').value = item.producto;
+        document.getElementById('almCategoria').value = item.categoria;
+        document.getElementById('almStock').value = item.stock;
+        document.getElementById('almIngresos').value = item.ingresos;
+        document.getElementById('almVentas').value = item.ventas;
+        document.getElementById('almPrecioCompra').value = item.precioCompra;
+        document.getElementById('almPrecioVenta').value = item.precioVenta;
+
+        document.getElementById('warehouseModal').classList.add('active');
+    },
+
+    closeAlmacenModal() {
+        this.editingAlmacenId = null;
+        document.getElementById('warehouseModal').classList.remove('active');
+        const form = document.getElementById('warehouseForm');
+        if (form) form.reset();
+    },
+
+    saveAlmacenItem(event) {
+        event.preventDefault();
+        const producto = document.getElementById('almProducto').value.trim();
+        const categoria = document.getElementById('almCategoria').value.trim();
+        const stock = parseInt(document.getElementById('almStock').value) || 0;
+        const ingresos = parseInt(document.getElementById('almIngresos').value) || 0;
+        const ventas = parseInt(document.getElementById('almVentas').value) || 0;
+        const precioCompra = parseFloat(document.getElementById('almPrecioCompra').value) || 0;
+        const precioVenta = parseFloat(document.getElementById('almPrecioVenta').value) || 0;
+
+        if (!producto || !categoria) {
+            showNotification('Completa producto y categoría', 'error');
+            return;
+        }
+
+        if (this.editingAlmacenId) {
+            const item = this.data.almacen.find(a => a.id === this.editingAlmacenId);
+            if (!item) return;
+            item.producto = producto;
+            item.categoria = categoria;
+            item.stock = stock;
+            item.ingresos = ingresos;
+            item.ventas = ventas;
+            item.precioCompra = precioCompra;
+            item.precioVenta = precioVenta;
+            showNotification(`✏️ ${producto} actualizado`, 'success');
+        } else {
+            const newId = Math.max(...this.data.almacen.map(a => a.id), 0) + 1;
+            this.data.almacen.push({ id: newId, producto, categoria, stock, ingresos, ventas, precioCompra, precioVenta });
+            showNotification(`✅ ${producto} agregado al almacén`, 'success');
+        }
+
+        this.closeAlmacenModal();
+        this.renderAlmacen();
+        this.renderDashboard();
+        this.renderMenu();
+    },
+
+    deleteAlmacenSetup(itemId) {
+        const item = this.data.almacen.find(a => a.id === itemId);
+        if (!item) return;
+        this.almacenToDelete = itemId;
+        document.getElementById('deleteModal').classList.add('active');
+    },
+
+    confirmDeleteAlmacen() {
+        if (!this.almacenToDelete) return;
+        const item = this.data.almacen.find(a => a.id === this.almacenToDelete);
+        if (!item) return;
+        const name = item.producto;
+        this.data.almacen = this.data.almacen.filter(a => a.id !== this.almacenToDelete);
+        this.almacenToDelete = null;
+        document.getElementById('deleteModal').classList.remove('active');
+        showNotification(`🗑️ ${name} eliminado del almacén`, 'success');
+        this.renderAlmacen();
+        this.renderDashboard();
+    },
+
+    adjustStock(itemId, delta) {
+        const item = this.data.almacen.find(a => a.id === itemId);
+        if (!item) return;
+        const previous = item.stock;
+        item.stock = Math.max(0, item.stock + delta);
+        if (delta > 0) item.ingresos += delta;
+        if (delta < 0) item.ventas += Math.abs(delta);
+        showNotification(`📦 ${item.producto}: ${previous} → ${item.stock}`, 'info');
+        this.renderAlmacen();
+        this.renderDashboard();
+    },
+
+    exportAlmacenCSV() {
+        if (!this.data.almacen || this.data.almacen.length === 0) {
+            showNotification('No hay datos para exportar', 'info');
+            return;
+        }
+        const rows = [
+            ['id', 'producto', 'categoria', 'stock', 'ingresos', 'ventas', 'precioCompra', 'precioVenta']
+        ];
+        this.data.almacen.forEach(it => rows.push([it.id, it.producto, it.categoria, it.stock, it.ingresos, it.ventas, it.precioCompra, it.precioVenta]));
+        const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `almacen_export_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showNotification('Exportado CSV correctamente', 'success');
+    },
+
+    importAlmacenFromJSON(text) {
+        try {
+            const arr = JSON.parse(text);
+            if (!Array.isArray(arr)) throw new Error('JSON debe ser un arreglo');
+            const maxId = Math.max(...this.data.almacen.map(a => a.id), 0);
+            let nextId = maxId + 1;
+            arr.forEach(obj => {
+                const item = {
+                    id: nextId++,
+                    producto: obj.producto || obj.name || 'Item',
+                    categoria: obj.categoria || obj.category || 'Sin categoría',
+                    stock: parseInt(obj.stock) || 0,
+                    ingresos: parseInt(obj.ingresos) || 0,
+                    ventas: parseInt(obj.ventas) || 0,
+                    precioCompra: parseFloat(obj.precioCompra) || 0,
+                    precioVenta: parseFloat(obj.precioVenta) || 0
+                };
+                this.data.almacen.push(item);
+            });
+            showNotification(`✅ Importados ${arr.length} ítems correctamente`, 'success');
+            this.renderAlmacen();
+            this.renderDashboard();
+        } catch (err) {
+            console.error(err);
+            showNotification('Error al importar JSON: ' + err.message, 'error');
+        }
+    },
+
+    /* --------------------- FIN GESTIÓN DE ALMACÉN --------------------- */
+
     changeRole(newRole) {
         this.currentRole = newRole;
         this.activeSection = 'dashboard';
-        
-        const info = this.rolInfo[newRole];
-        document.getElementById('userName').textContent = info.name;
-        document.getElementById('userRole').textContent = newRole;
-        document.getElementById('userIcon').textContent = info.icon;
-        
+
+        const info = this.rolInfo[newRole] || { name: newRole || 'Usuario', icon: '👤' };
+        const userNameEl = document.getElementById('userName');
+        const userRoleEl = document.getElementById('userRole');
+        const userIconEl = document.getElementById('userIcon');
+        if (userNameEl) userNameEl.textContent = info.name;
+        if (userRoleEl) userRoleEl.textContent = newRole;
+        if (userIconEl) userIconEl.textContent = info.icon;
+
+        if (!this.rolePermissions[newRole]) {
+            console.warn('Rol no reconocido:', newRole);
+            this.rolePermissions[newRole] = [];
+        }
+
         this.renderMenu();
         this.switchSection('dashboard');
     },
 
     switchSection(section) {
         this.activeSection = section;
-        
+
         this.sections.forEach(s => {
             const el = document.getElementById(s);
             if (el) {
-                el.classList.toggle('hidden', s !== section);
+                if (s !== section) {
+                    el.classList.add('hidden');
+                } else {
+                    el.classList.remove('hidden');
+                }
             }
         });
-        
+
         this.renderMenu();
         this.updatePageTitle();
         this.renderContent();
@@ -238,10 +408,19 @@ const appState = {
 
     renderMenu() {
         const menu = document.getElementById('menu');
+        if (!menu) {
+            console.error('❌ Elemento #menu no encontrado');
+            return;
+        }
+        
         menu.innerHTML = '';
-        
+
         const permissions = this.rolePermissions[this.currentRole];
-        
+        if (!permissions) {
+            console.warn('⚠️ No hay permisos para el rol:', this.currentRole);
+            return;
+        }
+
         const menuItems = [
             { id: 'dashboard', label: 'Dashboard', icon: '📊', badge: null },
             { id: 'produccion', label: 'Producción', icon: '🏭', badge: this.data.products.length },
@@ -254,13 +433,12 @@ const appState = {
         menuItems.forEach(item => {
             if (permissions.includes(item.id)) {
                 const btn = document.createElement('button');
-                btn.className = `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                    this.activeSection === item.id
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'text-gray-300 hover:bg-blue-700 hover:text-white'
-                }`;
+                btn.className = `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${this.activeSection === item.id
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'text-gray-300 hover:bg-blue-700 hover:text-white'
+                    }`;
                 btn.onclick = () => this.switchSection(item.id);
-                
+
                 btn.innerHTML = `
                     <span class="text-xl">${item.icon}</span>
                     <span class="flex-1 text-left">${item.label}</span>
@@ -334,8 +512,8 @@ const appState = {
 
                     <div class="space-y-3">
                         ${productsInStage.map(product => {
-                            const days = Math.floor((new Date() - new Date(product.fechaInicio)) / (1000 * 60 * 60 * 24));
-                            return `
+                const days = Math.floor((new Date() - new Date(product.fechaInicio)) / (1000 * 60 * 60 * 24));
+                return `
                                 <div class="border rounded-lg p-4 hover:shadow-md transition-shadow product-card">
                                     <div class="flex items-center justify-between gap-4">
                                         <div class="flex-1">
@@ -370,7 +548,7 @@ const appState = {
                                     </div>
                                 </div>
                             `;
-                        }).join('')}
+            }).join('')}
                     </div>
                 </div>
             `;
@@ -379,7 +557,27 @@ const appState = {
 
     renderAlmacen() {
         const table = document.getElementById('warehouseTable');
-        table.innerHTML = this.data.almacen.map(item => `
+
+        let items = this.data.almacen.slice();
+        const q = this.almacenFilter && this.almacenFilter.toLowerCase();
+        if (q) {
+            items = items.filter(it => (it.producto + ' ' + it.categoria).toLowerCase().includes(q));
+        }
+        if (this.almacenLowStockOnly) {
+            items = items.filter(it => it.stock < 50);
+        }
+
+        if (!table) return;
+
+        if (items.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="8" class="p-6 text-center text-gray-500">No se encontraron ítems.</td>
+                </tr>`;
+            return;
+        }
+
+        table.innerHTML = items.map(item => `
             <tr class="border-b hover:bg-gray-50 transition-colors">
                 <td class="px-6 py-4">
                     <div class="font-semibold text-gray-800">${item.producto}</div>
@@ -406,9 +604,12 @@ const appState = {
                     </div>
                 </td>
                 <td class="px-6 py-4 text-center">
-                    <button onclick="alert('Funcionalidad en desarrollo')" class="text-blue-600 hover:text-blue-800 font-semibold text-sm">
-                        Editar
-                    </button>
+                    <div class="flex items-center justify-center gap-2">
+                        <button onclick="appState.openEditAlmacenModal(${item.id})" class="text-orange-600 hover:text-orange-800 font-semibold text-sm">✏️</button>
+                        <button onclick="appState.adjustStock(${item.id}, 1)" class="text-green-600 hover:text-green-800 font-semibold text-sm">+1</button>
+                        <button onclick="appState.adjustStock(${item.id}, -1)" class="text-red-600 hover:text-red-800 font-semibold text-sm">-1</button>
+                        <button onclick="appState.deleteAlmacenSetup(${item.id})" class="text-gray-600 hover:text-gray-900 font-semibold text-sm">🗑️</button>
+                    </div>
                 </td>
             </tr>
         `).join('');
@@ -489,13 +690,64 @@ function showNotification(message, type = 'info') {
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
-    const roleSelector = document.getElementById('roleSelector');
+    console.log('🚀 Iniciando aplicación Fashion Control...');
     
-    roleSelector.addEventListener('change', (e) => {
-        appState.changeRole(e.target.value);
-    });
+    const roleSelector = document.getElementById('roleSelector');
+    const menu = document.getElementById('menu');
+    const dashboard = document.getElementById('dashboard');
+    
+    console.log('✓ roleSelector:', roleSelector ? 'OK' : 'NO ENCONTRADO');
+    console.log('✓ menu:', menu ? 'OK' : 'NO ENCONTRADO');
+    console.log('✓ dashboard:', dashboard ? 'OK' : 'NO ENCONTRADO');
+    
+    if (roleSelector) {
+        roleSelector.addEventListener('change', (e) => {
+            console.log('👤 Cambiando rol a:', e.target.value);
+            appState.changeRole(e.target.value);
+        });
+        roleSelector.value = appState.currentRole;
+        console.log('✓ Rol inicial:', appState.currentRole);
+    }
 
-    // Inicializar
+    console.log('📋 Renderizando menú...');
     appState.renderMenu();
+    
+    console.log('📊 Renderizando dashboard...');
     appState.renderDashboard();
+    
+    console.log('🔀 Cambiando a sección dashboard...');
+    appState.switchSection('dashboard');
+
+    const almacenSearch = document.getElementById('almacenSearch');
+    const almacenLowStock = document.getElementById('almacenLowStock');
+    const importAlmacenInput = document.getElementById('importAlmacenInput');
+    
+    if (almacenSearch) {
+        almacenSearch.addEventListener('input', (e) => {
+            appState.almacenFilter = e.target.value;
+            appState.renderAlmacen();
+        });
+    }
+    
+    if (almacenLowStock) {
+        almacenLowStock.addEventListener('change', (e) => {
+            appState.almacenLowStockOnly = e.target.checked;
+            appState.renderAlmacen();
+        });
+    }
+    
+    if (importAlmacenInput) {
+        importAlmacenInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    appState.importAlmacenFromJSON(event.target.result);
+                };
+                reader.readAsText(file);
+            }
+        });
+    }
+    
+    console.log('✅ Aplicación iniciada correctamente');
 });
